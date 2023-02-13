@@ -13,16 +13,17 @@ import (
 const Version = "0.1"
 
 var (
-	FlagCPU     = flag.Duration("c", 0, "Interval for CPU waste")
-	FlagMemory  = flag.Int("m", 0, "GiB of memory waste")
-	FlagNetwork = flag.Duration("n", 0, "Interval for network speed test")
+	FlagCPU     = flag.Duration("nc", 0, "Interval for CPU ")
+	FlagCPURun  = flag.Duration("ncr", 0, "CPU keep time")
+	FlagMemory  = flag.Int("nm", 0, "GiB of memory")
+	FlagNetwork = flag.Duration("nn", 0, "Interval for network")
 )
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
-	fmt.Println("NeverIdle", Version, "- Getting worse from here.")
-	fmt.Println("Platform:", runtime.GOOS, ",", runtime.GOARCH, ",", runtime.Version())
-	fmt.Println("GitHub: https://github.com/layou233/NeverIdle")
+	//fmt.Println("NeverIdle", Version, "- Getting worse from here.")
+	//fmt.Println("Platform:", runtime.GOOS, ",", runtime.GOARCH, ",", runtime.Version())
+	//fmt.Println("GitHub: https://github.com/layou233/NeverIdle")
 
 	flag.Parse()
 	nothingEnabled := true
@@ -30,7 +31,7 @@ func main() {
 	if *FlagMemory != 0 {
 		nothingEnabled = false
 		fmt.Println("====================")
-		fmt.Println("Starting memory wasting of", *FlagMemory, "GiB")
+		fmt.Println("Starting memory with size", *FlagMemory, "GiB")
 		go waste.Memory(*FlagMemory)
 		runtime.Gosched()
 		fmt.Println("====================")
@@ -39,8 +40,8 @@ func main() {
 	if *FlagCPU != 0 {
 		nothingEnabled = false
 		fmt.Println("====================")
-		fmt.Println("Starting CPU wasting with interval", *FlagCPU)
-		go waste.CPU(*FlagCPU)
+		fmt.Println("Starting computer with interval", *FlagCPU)
+		go waste.CPU(*FlagCPU, *FlagCPURun)
 		runtime.Gosched()
 		fmt.Println("====================")
 	}
@@ -48,7 +49,7 @@ func main() {
 	if *FlagNetwork != 0 {
 		nothingEnabled = false
 		fmt.Println("====================")
-		fmt.Println("Starting network speed testing with interval", *FlagNetwork)
+		fmt.Println("Starting network with interval", *FlagNetwork)
 		go waste.Network(*FlagNetwork)
 		runtime.Gosched()
 		fmt.Println("====================")
