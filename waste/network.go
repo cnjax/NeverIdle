@@ -15,7 +15,8 @@ import (
 )
 
 var dlSizes = [...]int{350, 500, 750, 1000, 1500, 2000, 2500, 3000, 3500, 4000}
-var ulSizes = [...]int{100, 300, 500, 800, 1000, 1500, 2500, 3000, 3500, 4000} //kB
+var ulSizes = [...]int{350, 500, 750, 1000, 1500, 2000, 2500, 3000, 3500, 4000}
+
 //type Myspeedtest speedtest.Server
 
 func Network(interval time.Duration) {
@@ -51,17 +52,18 @@ func Network(interval time.Duration) {
 
 		dlURL := strings.Split(s.URL, "/upload.php")[0]
 		for i := 1; i <= 50; i++ {
-			err := downloadRequest(context.Background(), dlURL, rand.Intn(9))
+			err = downloadRequest(context.Background(), dlURL, rand.Intn(9))
 			if err != nil {
-				break
+				fmt.Println("error:", err)
 			}
-			time.Sleep(time.Second)
+			time.Sleep(100 * time.Millisecond)
 			err = uploadRequest(context.Background(), s.URL, rand.Intn(9))
 			if err != nil {
-				break
+				fmt.Println("error:", err)
 			}
-			time.Sleep(time.Second)
+			time.Sleep(500 * time.Millisecond)
 		}
+		fmt.Println("[NETWORK] task finish,waiting for next")
 		//
 		//err = s.DownloadTest(false)
 		//if err != nil {
@@ -89,7 +91,7 @@ func downloadRequest(ctx context.Context, dlURL string, w int) error {
 	if err != nil {
 		return err
 	}
-	doer := &http.Client{}
+	doer := &http.Client{Timeout: 5 * time.Second}
 	resp, err := doer.Do(req)
 	if err != nil {
 		return err
@@ -109,7 +111,7 @@ func uploadRequest(ctx context.Context, ulURL string, w int) error {
 	}
 
 	req.Header.Set("Content-Type", "application/octet-stream")
-	doer := &http.Client{}
+	doer := &http.Client{Timeout: 5 * time.Second}
 	resp, err := doer.Do(req)
 	if err != nil {
 		return err
